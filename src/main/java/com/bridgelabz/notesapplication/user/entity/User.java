@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDate;
 
 
 @Table(name="USER")
@@ -20,53 +21,27 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column
+    @NonNull
     private String name;
     @Column
+    @NonNull
     private String email;
     @Column
+    @NonNull
     private String password;
-
-//    public int getId() {
-//        return id;
-//    }
-//
-//    public void setId(int id) {
-//        this.id = id;
-//    }
-//
-//    public String getName() {
-//        return name;
-//    }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-//
-//    public String getEmail() {
-//        return email;
-//    }
-//
-//    public void setEmail(String email) {
-//        this.email = email;
-//    }
-//
-//    public String getPassword() {
-//        return password;
-//    }
-//
-//    public void setPassword(String password) {
-//        this.password = password;
-//    }
-//
-//    @Override
-//    public String toString() {
-//        return "User{" +
-//                "id='" + id + '\'' +
-//                ", name='" + name + '\'' +
-//                ", email='" + email + '\'' +
-//                ", password='" + password + '\'' +
-//                '}';
-//    }
-
+    @Column
+    private boolean isVerified;
+    @Column
+    private LocalDate createdDate;
+    @Column
+    private LocalDate updatedDate;
+    @Column
+    private String profilePic;
+    @Column
+    private String country;
+    @Column
+    private String mobileNumber;
+    @Column
+    private String address;
 
 }
