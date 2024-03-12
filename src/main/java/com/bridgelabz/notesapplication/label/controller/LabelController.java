@@ -1,8 +1,11 @@
 package com.bridgelabz.notesapplication.label.controller;
 
+import com.bridgelabz.notesapplication.label.dto.LabelDTO;
 import com.bridgelabz.notesapplication.label.entity.Label;
 import com.bridgelabz.notesapplication.label.service.LabelServiceImpl;
+import com.bridgelabz.notesapplication.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -15,8 +18,9 @@ public class LabelController {
     LabelServiceImpl labelService;
 
     @PostMapping("/add")
-    public Mono<Label> addLabel(@RequestBody Label label) {
-        return labelService.addLabel(label);
+    public ResponseEntity<Response> addLabel(@RequestParam String token, @RequestBody LabelDTO labelDTO) {
+        Response res = labelService.addLabel(token, labelDTO);
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping("/getAll")

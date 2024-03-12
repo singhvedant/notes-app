@@ -2,7 +2,7 @@ package com.bridgelabz.notesapplication.user.controller;
 
 
 import com.bridgelabz.notesapplication.user.dto.UserDTO;
-import com.bridgelabz.notesapplication.user.entity.Response;
+import com.bridgelabz.notesapplication.util.Response;
 import com.bridgelabz.notesapplication.user.entity.User;
 import com.bridgelabz.notesapplication.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +39,8 @@ public class UserController {
     }
 
     @PostMapping("/user/{token}")
-    public Mono<ResponseEntity<Mono<Response>>> verifyToken(@PathVariable String token) {
-        Mono<Response> response = userService.verifyUser(token);
+    public Mono<ResponseEntity<Response>> verifyToken(@PathVariable String token) {
+        Response response = userService.verifyUser(token);
         return Mono.just(new ResponseEntity<>(response, HttpStatus.OK));
     }
 

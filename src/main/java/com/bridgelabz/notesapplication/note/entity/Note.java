@@ -21,4 +21,5 @@ public class Note {
     private String note;
     @Column
     private int userId;
+    //TODO : Implement Trash and other features that are there in NoteDTO
 }

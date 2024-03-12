@@ -1,4 +1,4 @@
-package com.bridgelabz.notesapplication.user.entity;
+package com.bridgelabz.notesapplication.util;
 
 public class Response {
 

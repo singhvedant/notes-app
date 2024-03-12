@@ -2,6 +2,7 @@ package com.bridgelabz.notesapplication.label.entity;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
@@ -20,7 +21,6 @@ public class Label {
     @Column
     protected String labelName;
     @Column
-    protected int userId;
-    @Column
+    @OneToMany(targetEntity = UserLabel.class)
     protected int noteId;
 }

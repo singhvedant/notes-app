@@ -1,21 +1,17 @@
 package com.bridgelabz.notesapplication.user.service;
 
 import com.bridgelabz.notesapplication.user.dto.UserDTO;
-import com.bridgelabz.notesapplication.user.entity.Response;
+import com.bridgelabz.notesapplication.util.Response;
 import com.bridgelabz.notesapplication.user.entity.User;
 import com.bridgelabz.notesapplication.user.exception.LoginException;
 import com.bridgelabz.notesapplication.user.exception.RegistrationException;
 import com.bridgelabz.notesapplication.user.repository.UserRepository;
-import com.bridgelabz.notesapplication.user.util.UserToken;
+import com.bridgelabz.notesapplication.util.UserToken;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
-import java.util.Objects;
 
 @Service
 public class UserService implements UserServiceInterface {
@@ -25,9 +21,6 @@ public class UserService implements UserServiceInterface {
 
     @Autowired
     Environment environment;
-
-
-// TODO : Handel exception
 
 //    public Response getAllUsers() {
 ////        Flux<User> allUsers = userRepository.findAll();
@@ -66,13 +59,12 @@ public class UserService implements UserServiceInterface {
 
     }
 
-    public Mono<Response> verifyUser(String token) {
-        int id = UserToken.verifyToken(token);
-        if (id == 0) {
-            return Mono.just(new Response("User not verified", 400));
-        } else {
-            Mono<User> userDao = userRepository.findById(id);
-            return Mono.just(new Response("User verified successfully", userDao, 200));
+    public Response verifyUser(String token) {
+        try {
+            int id = UserToken.verifyToken(token);
+            return new Response("User verified successfully", id, 200);
+        } catch (Exception e) {
+            return new Response("User verification failed", e, 400);
         }
     }
 }

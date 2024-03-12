@@ -1,4 +1,4 @@
-package com.bridgelabz.notesapplication.user.util;
+package com.bridgelabz.notesapplication.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
