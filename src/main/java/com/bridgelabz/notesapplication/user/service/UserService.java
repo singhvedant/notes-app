@@ -29,34 +29,30 @@ public class UserService implements UserServiceInterface {
 
 // TODO : Handel exception
 
-    public Response getAllUsers() {
-        Flux<User> allUsers = userRepository.findAll();
-        return new Response(
-                environment.getProperty("status.register.userAlreadyExist"),
-                Integer.parseInt(Objects.requireNonNull(environment.getProperty("status.token.ErrorCode")))
-        );
-    }
+//    public Response getAllUsers() {
+////        Flux<User> allUsers = userRepository.findAll();
+//        return new Response(
+//                environment.getProperty("status.register.userAlreadyExist"),
+//                Integer.parseInt(Objects.requireNonNull(environment.getProperty("status.token.ErrorCode")))
+//        );
+//    }
 
-    public Response loginService(UserDTO userDTO) throws LoginException {
-        User userDAO = userRepository.findAll().toStream()
-                .filter(s -> s.getEmail().equals(userDTO.getEmail()))
-                .findFirst()
-                .orElse(null);
-        if (userDAO != null) {
-            if (userDAO.getPassword().equals(userDTO.getPassword())) {
-                return new Response(environment.getProperty("status.login.success"), userDAO, Integer.parseInt(Objects.requireNonNull(environment.getProperty("status.login.successCode"))));
-            } else {
-                throw new LoginException(environment.getProperty("status.login.passwordIncorrect"));
-            }
-        } else {
-            throw new LoginException(environment.getProperty("status.login.userNotFound"));
-        }
+    public Mono<Response> loginService(UserDTO userDTO) {
+        return userRepository.findAll()
+                .filter(user -> user.getEmail().equals(userDTO.getEmail()))
+                .next() // This effectively replaces findFirst, as it returns the first item in the stream or empty if the stream is empty.
+                .flatMap(userDAO -> {
+                    if (userDAO.getPassword().equals(userDTO.getPassword())) {
+                        String token = UserToken.generateToken(userDAO.getId());
+                        String message = "status.login.success";
+                        int successCode = Integer.parseInt("3");
+                        return Mono.just(new Response(message, token, successCode));
+                    } else {
+                        return Mono.error(new LoginException("status.login.passwordIncorrect"));
+                    }
+                })
+                .switchIfEmpty(Mono.error(new LoginException("status.login.userNotFound")));
     }
-
-    public Mono<Void> deleteUser(int id) {
-        return userRepository.deleteById(id);
-    }
-
 
 
     public Response registerUser(UserDTO user) throws RegistrationException {
@@ -70,7 +66,13 @@ public class UserService implements UserServiceInterface {
 
     }
 
-    public Mono<User> updateUser(UserDTO newUser) {
-        return null;
+    public Mono<Response> verifyUser(String token) {
+        int id = UserToken.verifyToken(token);
+        if (id == 0) {
+            return Mono.just(new Response("User not verified", 400));
+        } else {
+            Mono<User> userDao = userRepository.findById(id);
+            return Mono.just(new Response("User verified successfully", userDao, 200));
+        }
     }
 }
